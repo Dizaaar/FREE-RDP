@@ -24,10 +24,6 @@ jobs:
       run: |
         Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
-    - name: Install WinRAR
-      run: |
-        Invoke-WebRequest "https://www.rarlab.com/rar/winrar-x64-{{ version }}.exe" -OutFile "WinRAR.exe"
-        Start-Process -FilePath "WinRAR.exe" -ArgumentList "/S" -Wait
     - name: Show all desktop icons
       run: |
         $RegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
