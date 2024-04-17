@@ -33,7 +33,6 @@ jobs:
             "Network" = "::{208D2C60-3AEA-1069-A2D7-08002B30309D}"
             "Control Panel" = "::{21EC2020-3AEA-1069-A2DD-08002B30309D}"
             "Recycle Bin" = "::{645FF040-5081-101B-9F08-00AA002F954E}"
-            "Administrative Tools" = "::{D20EA4E1-3957-11d2-A40B-0C5020524153}"
         }
         foreach ($shortcut in $shortcuts.Keys) {
             $shortcutPath = "$desktopPath\$shortcut.lnk"
