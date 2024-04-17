@@ -26,13 +26,12 @@ jobs:
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
     - name: Hide specific desktop icons
       run: |
-        $icons = @{
-            "R4.3.3" = 1;
-            "Unity Hub" = 1;
-        }
-        foreach ($key in $icons.Keys) {
-            $RegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel"
-            Set-ItemProperty -Path "$RegPath" -Name $key -Value $icons[$key]
+        $iconsToRemove = @(
+            "C:\Users\YourUsername\Desktop\R 4.3.3.lnk",
+            "C:\Users\YourUsername\Desktop\Unity Hub.lnk"
+        )
+        foreach ($icon in $iconsToRemove) {
+            Remove-Item -Path $icon -Force
         }
     - name: Change color mode to dark
       run: |
