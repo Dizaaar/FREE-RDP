@@ -36,9 +36,12 @@ jobs:
         }
         foreach ($iconName in $iconPaths.Keys) {
             $iconPath = $iconPaths[$iconName]
-            $shortcut = $shell.SpecialFolders("Desktop").Items().InvokeVerb("New")
-            $shortcut.TargetPath = $iconPath
-            $shortcut.Save()
+            $desktopItem = $shell.Namespace("Desktop").ParseName("$iconName.lnk")
+            if ($desktopItem -eq $null) {
+                $shortcut = $shell.CreateShortcut("$desktopPath\$iconName.lnk")
+                $shortcut.TargetPath = $iconPath
+                $shortcut.Save()
+            }
         }
     - name: Change color mode to dark
       run: |
