@@ -22,7 +22,7 @@ jobs:
         Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
     - name: Install BlueStacks 5
       run: |
-        Invoke-WebRequest "https://cdn3.bluestacks.com/downloads/windows/BlueStacksInstaller_5.3.110.1017_native_68e4b1cb1a916f8c0b1cd75d5a478fa3.exe" -OutFile "BlueStacks5Setup.exe"
+        Invoke-WebRequest "https://cdn3.bluestacks.com/downloads/windows/BlueStacksInstaller_5.3.110.1017_native.exe" -OutFile "BlueStacks5Setup.exe"
         Start-Process -FilePath "BlueStacks5Setup.exe" -ArgumentList "/S" -Wait
     - name: Install BlueStacks 4
       run: |
