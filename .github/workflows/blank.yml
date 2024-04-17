@@ -27,7 +27,7 @@ jobs:
     - name: Hide specific desktop icons
       run: |
         $iconsToRemove = @(
-            "C:\Users\runneradmin\Desktop\Unity Hub.lnk"
+            "C:\Users\runneradmin\Desktop\Unity Hub.exe"
         )
         foreach ($icon in $iconsToRemove) {
             Remove-Item -Path $icon -Force
