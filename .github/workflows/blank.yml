@@ -20,6 +20,21 @@ jobs:
       run: |
         Invoke-WebRequest "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe" -OutFile "SteamSetup.exe"
         Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
+    - name: Install BlueStacks 5
+      run: |
+        Invoke-WebRequest "https://cdn3.bluestacks.com/downloads/windows/bgp64installer_native_5ae29c5193a40_2022.02.25.2002_67d7b85c005c80bbf63ce336b59fdcd6.exe" -OutFile "BlueStacks5Setup.exe"
+        Start-Process -FilePath "BlueStacks5Setup.exe" -ArgumentList "/S" -Wait
+    - name: Install BlueStacks 4
+      run: |
+        Invoke-WebRequest "https://cdn3.bluestacks.com/downloads/windows/bgp64installer-ubi-native.exe" -OutFile "BlueStacks4Setup.exe"
+        Start-Process -FilePath "BlueStacks4Setup.exe" -ArgumentList "/S" -Wait
+    - name: Set Chrome as default browser
+      run: |
+        $RegPath = "HKLM:\SOFTWARE\Classes\http\shell\open\command"
+        $RegValue = "chrome.exe"
+        Set-ItemProperty -Path $RegPath -Name "(Default)" -Value $RegValue
+        $RegPath = "HKLM:\SOFTWARE\Classes\https\shell\open\command"
+        Set-ItemProperty -Path $RegPath -Name "(Default)" -Value $RegValue
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
