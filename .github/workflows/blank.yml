@@ -20,14 +20,10 @@ jobs:
       run: |
         Invoke-WebRequest "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe" -OutFile "SteamSetup.exe"
         Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
-    - name: Install Epic Games
+    - name: Install Epic Games Launcher
       run: |
-        Invoke-WebRequest "https://cdn2.unrealengine.com/epic+launcher/EpicInstaller-11.1.0.msi" -OutFile "EpicGamesInstaller.msi"
-        Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesInstaller.msi", "/quiet", "/qn", "/norestart" -Wait
-    - name: Start Epic Games Services
-      run: |
-        Start-Service -Name "EpicOnlineServices"
-        Start-Service -Name "EpicWebHelper"
+        Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
+        Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
     - name: Set Chrome as default browser
       run: |
         $RegPath = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
