@@ -1,4 +1,4 @@
-name: CI
+name: PC
 
 on: [push, workflow_dispatch]
 
@@ -23,16 +23,28 @@ jobs:
       run: |
         Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
-    - name: Show all desktop icons
+    - name: Install WinRAR 64-bit
+      run: |
+        Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
+        Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
+    - name: Install AnyDesk
+      run: |
+        Invoke-WebRequest "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDesk.exe"
+        Start-Process -FilePath "AnyDesk.exe" -ArgumentList "/S" -Wait
+    - name: Install OBS Studio
+      run: |
+        Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
+        Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
+    - name: Show Desktop icons
       run: |
         $desktopPath = [System.Environment]::GetFolderPath('Desktop')
         $shell = New-Object -ComObject WScript.Shell
         $icons = @{
-            "This PC" = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
             "User's Files" = "shell:Profile"
-            "Recycle Bin" = "shell:RecycleBinFolder"
-            "Control Panel" = "shell:ControlPanelFolder"
+            "This PC" = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
             "Network" = "shell:NetworkPlacesFolder"
+            "Control Panel" = "shell:ControlPanelFolder"
+            "Recycle Bin" = "shell:RecycleBinFolder"
         }
         foreach ($icon in $icons.Keys) {
             $iconPath = "$desktopPath\$icon.lnk"
@@ -41,22 +53,18 @@ jobs:
             $shortcut.TargetPath = $targetPath
             $shortcut.Save()
         }
+    - name: Set Chrome as default web browser
+      run: |
+        $RegPath = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
+        Set-ItemProperty -Path $RegPath -Name "ProgId" -Value "ChromeHTML"
     - name: Change color mode to dark
       run: |
         reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
         reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
-    - name: Set Chrome as default browser
-      run: |
-        $RegPath = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
-        Set-ItemProperty -Path $RegPath -Name "ProgId" -Value "ChromeHTML"
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
     - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
-    - name: Install WinRAR 64-bit
-      run: |
-        Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
-        Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
     - name: Create Tunnel
       run: .\ngrok\ngrok.exe tcp 3389
