@@ -27,21 +27,19 @@ jobs:
       run: |
         $desktopPath = [System.Environment]::GetFolderPath('Desktop')
         $shell = New-Object -ComObject WScript.Shell
-        $iconPaths = @{
+        $icons = @{
             "This PC" = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
-            "User's Files" = $desktopPath
-            "Recycle Bin" = "::{645FF040-5081-101B-9F08-00AA002F954E}"
-            "Control Panel" = "::{21EC2020-3AEA-1069-A2DD-08002B30309D}"
-            "Network" = "::{208D2C60-3AEA-1069-A2D7-08002B30309D}"
+            "User's Files" = "shell:Profile"
+            "Recycle Bin" = "shell:RecycleBinFolder"
+            "Control Panel" = "shell:ControlPanelFolder"
+            "Network" = "shell:NetworkPlacesFolder"
         }
-        foreach ($iconName in $iconPaths.Keys) {
-            $iconPath = $iconPaths[$iconName]
-            $desktopItem = $shell.Namespace("Desktop").ParseName("$iconName.lnk")
-            if ($desktopItem -eq $null) {
-                $shortcut = $shell.CreateShortcut("$desktopPath\$iconName.lnk")
-                $shortcut.TargetPath = $iconPath
-                $shortcut.Save()
-            }
+        foreach ($icon in $icons.Keys) {
+            $iconPath = "$desktopPath\$icon.lnk"
+            $targetPath = $icons[$icon]
+            $shortcut = $shell.CreateShortcut($iconPath)
+            $shortcut.TargetPath = $targetPath
+            $shortcut.Save()
         }
     - name: Change color mode to dark
       run: |
