@@ -27,10 +27,6 @@ jobs:
       run: |
         Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
         Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
-    - name: Install Mega
-      run: |
-        Invoke-WebRequest "https://mega.nz/MEGAsyncSetup64.exe" -OutFile "MEGAsyncSetup64.exe"
-        Start-Process -FilePath "MEGAsyncSetup64.exe" -ArgumentList "/S" -Wait
     - name: Install OBS Studio
       run: |
         Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
@@ -72,3 +68,11 @@ jobs:
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
     - name: Create Tunnel
       run: .\ngrok\ngrok.exe tcp 3389
+    - name: Install Mega
+      run: |
+        Invoke-WebRequest "https://mega.nz/MEGAsyncSetup64.exe" -OutFile "MEGAsyncSetup64.exe"
+        Start-Process -FilePath "MEGAsyncSetup64.exe" -ArgumentList "/S" -Wait
+    - name: Install AnyDesk
+      run: |
+        Invoke-WebRequest "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDeskInstaller.exe"
+        Start-Process -FilePath "AnyDeskInstaller.exe" -ArgumentList "/S" -Wait
