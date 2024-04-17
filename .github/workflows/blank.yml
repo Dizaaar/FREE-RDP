@@ -24,14 +24,8 @@ jobs:
       run: |
         Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
-    - name: Hide specific desktop icons
-      run: |
-        $iconsToRemove = @(
-            "C:\Users\runneradmin\Desktop\Unity Hub.exe"
-        )
-        foreach ($icon in $iconsToRemove) {
-            Remove-Item -Path $icon -Force
-        }
+    - name: Remove Unity Hub icon from desktop
+        run: Remove-Item -Path "$env:USERPROFILE\Desktop\Unity Hub.lnk" -Force
     - name: Change color mode to dark
       run: |
         reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
