@@ -24,15 +24,11 @@ jobs:
       run: |
         Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
-    - name: Show specific desktop icons and hide unwanted ones
+    - name: Hide specific desktop icons
       run: |
         $icons = @{
-            "ThisPC" = 0;
-            "RecycleBin" = 0;
-            "Network" = 0;
-            "ControlPanel" = 0;
-            "R 4.3.3" = 1; # Change this to the exact name of the R 4.3.3 icon
-            "Unity Hub" = 1; # Change this to the exact name of the Unity Hub icon
+            "R4.3.3" = 1;
+            "Unity Hub" = 1;
         }
         foreach ($key in $icons.Keys) {
             $RegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel"
