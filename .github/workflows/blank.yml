@@ -20,22 +20,18 @@ jobs:
       run: |
         Invoke-WebRequest "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe" -OutFile "SteamSetup.exe"
         Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
-    - name: Download BlueStacks 5
+    - name: Install Epic Games
       run: |
-        Invoke-WebRequest "https://cdn3.bluestacks.com/downloads/windows/BlueStacksInstaller_5.3.110.1017_native_68e4b1cb1a916f8c0b1cd75d5a478fa3.exe" -OutFile "BlueStacks5Setup.exe"
-    - name: Install BlueStacks 5
-      run: .\BlueStacks5Setup.exe --silent
-    - name: Install BlueStacks 4
+        Invoke-WebRequest "https://www.epicgames.com/store/download" -OutFile "EpicGamesInstaller.exe"
+        Start-Process -FilePath "EpicGamesInstaller.exe" -ArgumentList "--quiet" -Wait
+    - name: Start Epic Games Services
       run: |
-        Invoke-WebRequest "https://cdn3.bluestacks.com/downloads/windows/bgp64installer-ubi-native.exe" -OutFile "BlueStacks4Setup.exe"
-        Start-Process -FilePath "BlueStacks4Setup.exe" -ArgumentList "/S" -Wait
+        Start-Service -Name "EpicOnlineServices"
+        Start-Service -Name "EpicWebHelper"
     - name: Set Chrome as default browser
       run: |
-        $RegPath = "HKLM:\SOFTWARE\Classes\http\shell\open\command"
-        $RegValue = "chrome.exe"
-        Set-ItemProperty -Path $RegPath -Name "(Default)" -Value $RegValue
-        $RegPath = "HKLM:\SOFTWARE\Classes\https\shell\open\command"
-        Set-ItemProperty -Path $RegPath -Name "(Default)" -Value $RegValue
+        $RegPath = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
+        Set-ItemProperty -Path $RegPath -Name "ProgId" -Value "ChromeHTML"
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
