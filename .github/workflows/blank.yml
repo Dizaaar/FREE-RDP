@@ -31,10 +31,6 @@ jobs:
       run: |
         Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
         Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
-    - name: Install BlueStacks
-      run: |
-        Invoke-WebRequest "https://github.com/Dizar5/FREE-RDP/raw/main/BlueStacksInstaller_5.exe" -OutFile "BlueStacksInstaller_5.exe"
-        Start-Process -FilePath "BlueStacksInstaller_5.exe" -ArgumentList "/S" -Wait
     - name: Show Desktop icons
       run: |
         $desktopPath = [System.Environment]::GetFolderPath('Desktop')
