@@ -22,8 +22,8 @@ jobs:
         Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
     - name: Install Epic Games
       run: |
-        Invoke-WebRequest "https://www.epicgames.com/store/download" -OutFile "EpicGamesInstaller.exe"
-        Start-Process -FilePath "EpicGamesInstaller.exe" -ArgumentList "--quiet" -Wait
+        Invoke-WebRequest "https://cdn2.unrealengine.com/epic+launcher/EpicInstaller-11.1.0.msi" -OutFile "EpicGamesInstaller.msi"
+        Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesInstaller.msi", "/quiet", "/qn", "/norestart" -Wait
     - name: Start Epic Games Services
       run: |
         Start-Service -Name "EpicOnlineServices"
