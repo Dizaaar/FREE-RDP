@@ -22,9 +22,9 @@ jobs:
         Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
     - name: Download BlueStacks 5
       run: |
-        Invoke-WebRequest "https://www.bluestacks.com/download.html?utm_campaign=download-page-ar" -OutFile "BlueStacks5Setup.exe"
-        Start-Process -FilePath "BlueStacks5Setup.exe"
-        Write-Host "Please manually install BlueStacks 5 from the downloaded file."
+        Invoke-WebRequest "https://cdn3.bluestacks.com/downloads/windows/BlueStacksInstaller_5.3.110.1017_native_68e4b1cb1a916f8c0b1cd75d5a478fa3.exe" -OutFile "BlueStacks5Setup.exe"
+    - name: Install BlueStacks 5
+      run: .\BlueStacks5Setup.exe --silent
     - name: Install BlueStacks 4
       run: |
         Invoke-WebRequest "https://cdn3.bluestacks.com/downloads/windows/bgp64installer-ubi-native.exe" -OutFile "BlueStacks4Setup.exe"
