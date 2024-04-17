@@ -27,7 +27,6 @@ jobs:
     - name: Hide specific desktop icons
       run: |
         $iconsToRemove = @(
-            "C:\Users\runneradmin\Desktop\R 4.3.3.lnk",
             "C:\Users\runneradmin\Desktop\Unity Hub.lnk"
         )
         foreach ($icon in $iconsToRemove) {
