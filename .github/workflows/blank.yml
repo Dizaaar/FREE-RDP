@@ -4,7 +4,6 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
-
     runs-on: windows-latest
 
     steps:
@@ -24,25 +23,21 @@ jobs:
       run: |
         Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
-    - name: Install WinRAR 64-bit
-      run: |
-        Invoke-WebRequest "https://www.rarlab.com/rar/winrar-x64-latest.exe" -OutFile "WinRARInstaller.exe"
-        Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
     - name: Show all desktop icons
       run: |
         $desktopPath = [System.Environment]::GetFolderPath('Desktop')
         $shell = New-Object -ComObject WScript.Shell
-        $shortcuts = @{
+        $iconPaths = @{
             "This PC" = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
-            "Network" = "::{208D2C60-3AEA-1069-A2D7-08002B30309D}"
-            "Control Panel" = "::{21EC2020-3AEA-1069-A2DD-08002B30309D}"
+            "User's Files" = $desktopPath
             "Recycle Bin" = "::{645FF040-5081-101B-9F08-00AA002F954E}"
+            "Control Panel" = "::{21EC2020-3AEA-1069-A2DD-08002B30309D}"
+            "Network" = "::{208D2C60-3AEA-1069-A2D7-08002B30309D}"
         }
-        foreach ($shortcut in $shortcuts.Keys) {
-            $shortcutPath = "$desktopPath\$shortcut.lnk"
-            $targetPath = $shortcuts[$shortcut]
-            $shortcut = $shell.CreateShortcut($shortcutPath)
-            $shortcut.TargetPath = $targetPath
+        foreach ($iconName in $iconPaths.Keys) {
+            $iconPath = $iconPaths[$iconName]
+            $shortcut = $shell.SpecialFolders("Desktop").Items().InvokeVerb("New")
+            $shortcut.TargetPath = $iconPath
             $shortcut.Save()
         }
     - name: Change color mode to dark
@@ -58,5 +53,9 @@ jobs:
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
     - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+    - name: Install WinRAR 64-bit
+      run: |
+        Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
+        Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
     - name: Create Tunnel
       run: .\ngrok\ngrok.exe tcp 3389
