@@ -24,6 +24,18 @@ jobs:
       run: |
         Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
+    - name: Install WinRAR
+      run: |
+        Invoke-WebRequest "https://www.rarlab.com/rar/winrar-x64-{{ version }}.exe" -OutFile "WinRAR.exe"
+        Start-Process -FilePath "WinRAR.exe" -ArgumentList "/S" -Wait
+    - name: Show all desktop icons
+      run: |
+        $RegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+        Set-ItemProperty -Path $RegPath -Name "HideIcons" -Value 0
+    - name: Change color mode to dark
+      run: |
+        reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
+        reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
     - name: Set Chrome as default browser
       run: |
         $RegPath = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
