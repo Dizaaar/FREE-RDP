@@ -24,10 +24,24 @@ jobs:
       run: |
         Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
-    - name: Show all desktop icons
+    - name: Install WinRAR
       run: |
-        $RegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
-        Set-ItemProperty -Path $RegPath -Name "HideIcons" -Value 0
+        Invoke-WebRequest "https://www.rarlab.com/rar/winrar-x64-{{ version }}.exe" -OutFile "WinRAR.exe"
+        Start-Process -FilePath "WinRAR.exe" -ArgumentList "/S" -Wait
+    - name: Show specific desktop icons and hide unwanted ones
+      run: |
+        $icons = @{
+            "ThisPC" = 0;
+            "RecycleBin" = 0;
+            "Network" = 0;
+            "ControlPanel" = 0;
+            "R 4.3.3" = 1; # Change this to the exact name of the R 4.3.3 icon
+            "Unity Hub" = 1; # Change this to the exact name of the Unity Hub icon
+        }
+        foreach ($key in $icons.Keys) {
+            $RegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel"
+            Set-ItemProperty -Path "$RegPath" -Name $key -Value $icons[$key]
+        }
     - name: Change color mode to dark
       run: |
         reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
