@@ -42,7 +42,7 @@ jobs:
         run: |
           Invoke-WebRequest "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDeskInstaller.exe"
           Start-Process -FilePath "AnyDeskInstaller.exe" -ArgumentList "/S" -Wait
-        timeout-minutes: 1
+        timeout-minutes: 5
 
       - name: Show Desktop icons
         run: |
