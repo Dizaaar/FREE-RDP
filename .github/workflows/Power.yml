@@ -23,6 +23,10 @@ jobs:
       run: |
         Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
+    - name: Install TaskbarX
+      run: |
+        Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX.zip"
+        Expand-Archive "TaskbarX.zip" -DestinationPath "TaskbarX"
     - name: Install WinRAR 64-bit
       run: |
         Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
@@ -31,11 +35,6 @@ jobs:
       run: |
         Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
         Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
-    - name: Install TaskbarX
-      run: |
-        Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX_1.7.8.0_x64.zip"
-        Expand-Archive "TaskbarX_1.7.8.0_x64.zip" -DestinationPath "TaskbarX"
-        Start-Process -FilePath "TaskbarX\TaskbarX.exe" -ArgumentList "/install" -Wait
     - name: Show Desktop icons
       run: |
         $desktopPath = [System.Environment]::GetFolderPath('Desktop')
