@@ -23,11 +23,6 @@ jobs:
       run: |
         Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
-    - name: Install TaskbarX
-      run: |
-        Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX_1.7.8.0_x64.zip"
-        Expand-Archive TaskbarX_1.7.8.0_x64.zip -DestinationPath TaskbarX
-        Start-Process -FilePath ".\TaskbarX\TaskbarX.exe" -ArgumentList "/install /silent" -Wait
     - name: Install WinRAR 64-bit
       run: |
         Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
@@ -47,12 +42,33 @@ jobs:
             "Control Panel" = "shell:ControlPanelFolder"
             "Recycle Bin" = "shell:RecycleBinFolder"
         }
+        $left = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Left
+        $top = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Top
+        $width = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Width
+        $height = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Height
+        $iconSize = 60
+        $x = $left + $width - $iconSize
+        $y = $top
+
         foreach ($icon in $icons.Keys) {
             $iconPath = "$desktopPath\$icon.lnk"
             $targetPath = $icons[$icon]
             $shortcut = $shell.CreateShortcut($iconPath)
             $shortcut.TargetPath = $targetPath
             $shortcut.Save()
+            $shellItem = $shell.NameSpace($desktopPath).ParseName($iconPath)
+            $shellItem.InvokeVerb("Pin to Taskbar")
+            Start-Sleep -Milliseconds 200
+            $iconPosition = (Get-ChildItem -Path "$env:APPDATA\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar").Count - 1
+            $shellItem.InvokeVerb("Unpin from Taskbar")
+            Move-Item -Path "$env:APPDATA\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\$icon.lnk" -Destination "$env:APPDATA\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\NewIcon.lnk"
+            Move-Item -Path "$env:APPDATA\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\NewIcon.lnk" -Destination "$env:APPDATA\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\$icon.lnk"
+            Start-Sleep -Milliseconds 200
+            $shortcut = $shell.CreateShortcut($iconPath)
+            $shortcut.TargetPath = $targetPath
+            $shortcut.Save()
+            (New-Object -ComObject WScript.Shell).Move($iconPath, $x, $y)
+            $y += $iconSize
         }
     - name: Set Chrome as default web browser
       run: |
