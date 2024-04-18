@@ -7,64 +7,79 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Download ngrok
-      run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
-    - name: Extract ngrok
-      run: Expand-Archive ngrok.zip
-    - name: Auth ngrok
-      run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
-      env:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-    - name: Install Steam
-      run: |
-        Invoke-WebRequest "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe" -OutFile "SteamSetup.exe"
-        Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
-    - name: Install Epic Games Launcher
-      run: |
-        Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
-        Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
-    - name: Install Nox Player
-      run: |
-        Invoke-WebRequest "https://www.bignox.com/en/download/fullPackage?beta" -OutFile "NoxPlayer.exe"
-        Start-Process -FilePath "NoxPlayer.exe" -ArgumentList "/S" -Wait
-    - name: Install WinRAR 64-bit
-      run: |
-        Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
-        Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
-    - name: Install OBS Studio
-      run: |
-        Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
-        Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
-    - name: Show Desktop icons
-      run: |
-        $desktopPath = [System.Environment]::GetFolderPath('Desktop')
-        $shell = New-Object -ComObject WScript.Shell
-        $icons = @{
-            "User's Files" = "shell:Profile"
-            "This PC" = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
-            "Network" = "shell:NetworkPlacesFolder"
-            "Control Panel" = "shell:ControlPanelFolder"
-            "Recycle Bin" = "shell:RecycleBinFolder"
-        }
-        foreach ($icon in $icons.Keys) {
-            $iconPath = "$desktopPath\$icon.lnk"
-            $targetPath = $icons[$icon]
-            $shortcut = $shell.CreateShortcut($iconPath)
-            $shortcut.TargetPath = $targetPath
-            $shortcut.Save()
-        }
-    - name: Set Chrome as default web browser
-      run: |
-        $RegPath = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
-        Set-ItemProperty -Path $RegPath -Name "ProgId" -Value "ChromeHTML"
-    - name: Change color mode to dark
-      run: |
-        reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
-        reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
-    - name: Enable TS
-      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
-    - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
-    - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
-    - name: Create Tunnel
-      run: .\ngrok\ngrok.exe tcp 3389
+      - name: Download ngrok
+        run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
+
+      - name: Extract ngrok
+        run: Expand-Archive ngrok.zip
+
+      - name: Auth ngrok
+        run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+        env:
+          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+
+      - name: Install Steam
+        run: |
+          Invoke-WebRequest "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe" -OutFile "SteamSetup.exe"
+          Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
+
+      - name: Install Epic Games Launcher
+        run: |
+          Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
+
+      - name: Install WinRAR 64-bit
+        run: |
+          Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
+          Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
+
+      - name: Install OBS Studio
+        run: |
+          Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
+          Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
+
+      - name: Install AnyDesk
+        run: |
+          Invoke-WebRequest "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDeskInstaller.exe"
+          Start-Process -FilePath "AnyDeskInstaller.exe" -ArgumentList "/S" -Wait
+
+      - name: Show Desktop icons
+        run: |
+          $desktopPath = [System.Environment]::GetFolderPath('Desktop')
+          $shell = New-Object -ComObject WScript.Shell
+          $icons = @{
+              "User's Files" = "shell:Profile"
+              "This PC" = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
+              "Network" = "shell:NetworkPlacesFolder"
+              "Control Panel" = "shell:ControlPanelFolder"
+              "Recycle Bin" = "shell:RecycleBinFolder"
+          }
+          foreach ($icon in $icons.Keys) {
+              $iconPath = "$desktopPath\$icon.lnk"
+              $targetPath = $icons[$icon]
+              $shortcut = $shell.CreateShortcut($iconPath)
+              $shortcut.TargetPath = $targetPath
+              $shortcut.Save()
+          }
+
+      - name: Set Chrome as default web browser
+        run: |
+          $RegPath = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
+          Set-ItemProperty -Path $RegPath -Name "ProgId" -Value "ChromeHTML"
+
+      - name: Change color mode to dark
+        run: |
+          reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
+          reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
+
+      - name: Enable TS
+        run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+
+      - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
+      - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+
+      - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+
+      - name: Create Tunnel
+        run: .\ngrok\ngrok.exe tcp 3389
