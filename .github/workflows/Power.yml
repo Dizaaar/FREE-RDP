@@ -31,10 +31,10 @@ jobs:
       run: |
         Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
         Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
-    - name: Install AnyDesk
+    - name: Install MEmu Player
       run: |
-        Invoke-WebRequest "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDeskInstaller.exe"
-        Start-Process -FilePath "AnyDeskInstaller.exe" -ArgumentList "/S /silent" -Wait
+        Invoke-WebRequest "https://www.memuplay.com/dists/download.php?package_url=https://download.microvirt.com/upgrade/Memu-Setup-7.2.2.3.exe" -OutFile "MEmu-Setup.exe"
+        Start-Process -FilePath "MEmu-Setup.exe" -ArgumentList "/S" -Wait
     - name: Show Desktop icons
       run: |
         $desktopPath = [System.Environment]::GetFolderPath('Desktop')
