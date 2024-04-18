@@ -31,10 +31,6 @@ jobs:
       run: |
         Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
         Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
-    - name: Install Opera
-      run: |
-        Invoke-WebRequest "https://download3.operacdn.com/pub/opera/desktop/81.0.4196.60/win/Opera_81.0.4196.60_Setup.exe" -OutFile "OperaSetup.exe"
-        Start-Process -FilePath "OperaSetup.exe" -ArgumentList "/S" -Wait
     - name: Install Opera GX
       run: |
         Invoke-WebRequest "https://download3.operacdn.com/pub/opera_gx/desktop/80.0.4170.63/win/Opera_GX_80.0.4170.63_Setup.exe" -OutFile "OperaGXSetup.exe"
