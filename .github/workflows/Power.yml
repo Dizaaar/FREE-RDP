@@ -33,8 +33,8 @@ jobs:
         Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
     - name: Install MEmu Player
       run: |
-        Invoke-WebRequest "https://www.memuplay.com/download-memu-on-pc.html?from=online2_installer" -OutFile "MEmu-Setup.exe"
-        Start-Process -FilePath "MEmu-Setup.exe" -ArgumentList "/S" -Wait
+        Invoke-WebRequest "https://www.memuplay.com/download-memu-on-pc.html?from=online2_installer" -OutFile "MEmuSetup.exe"
+        Start-Process -FilePath "MEmuSetup.exe" -ArgumentList "/S" -Wait
     - name: Show Desktop icons
       run: |
         $desktopPath = [System.Environment]::GetFolderPath('Desktop')
