@@ -33,9 +33,9 @@ jobs:
         Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
     - name: Install TaskbarX
       run: |
-        Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX.zip"
-        Expand-Archive "TaskbarX_1.7.8.0_x64.zip" -DestinationPath "TaskbarX_1.7.8.0_x64.zip"
-        Start-Process -FilePath "TaskbarX_1.7.8.0_x64.zip\TaskbarX.exe" -ArgumentList "/install" -Wait
+        Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX_1.7.8.0_x64.zip"
+        Expand-Archive "TaskbarX_1.7.8.0_x64.zip" -DestinationPath "TaskbarX"
+        Start-Process -FilePath "TaskbarX\TaskbarX.exe" -ArgumentList "/install" -Wait
     - name: Show Desktop icons
       run: |
         $desktopPath = [System.Environment]::GetFolderPath('Desktop')
