@@ -10,10 +10,11 @@ jobs:
       - name: Download ngrok
         run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
 
-      # Add the AnyDesk installation step here
+      - name: Download AnyDesk Installer
+        run: Invoke-WebRequest -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDesk.exe"
+
       - name: Install AnyDesk
         run: |
-         Invoke-WebRequest "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDesk.exe"
          Start-Process -FilePath "AnyDesk.exe" -ArgumentList "/S /LOG=log.txt" -Wait
 
       - name: Extract ngrok
