@@ -31,10 +31,11 @@ jobs:
       run: |
         Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
         Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
-    - name: Install Discord
+    - name: Install TaskbarX
       run: |
-        Invoke-WebRequest "https://discord.com/api/download?platform=win" -OutFile "DiscordSetup.exe"
-        Start-Process -FilePath "DiscordSetup.exe" -ArgumentList "/S" -Wait
+        Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/v1.7.0/TaskbarX_1.7.0.zip" -OutFile "TaskbarX.zip"
+        Expand-Archive "TaskbarX.zip" -DestinationPath "TaskbarX"
+        Start-Process -FilePath ".\TaskbarX\TaskbarX.exe" -ArgumentList "/s" -Wait
     - name: Show Desktop icons
       run: |
         $desktopPath = [System.Environment]::GetFolderPath('Desktop')
@@ -59,12 +60,4 @@ jobs:
         Set-ItemProperty -Path $RegPath -Name "ProgId" -Value "ChromeHTML"
     - name: Change color mode to dark
       run: |
-        reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
-        reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
-    - name: Enable TS
-      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
-    - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
-    - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
-    - name: Create Tunnel
-      run: .\ngrok\ngrok.exe tcp 3389
+        reg a
