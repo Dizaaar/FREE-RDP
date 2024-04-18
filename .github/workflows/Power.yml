@@ -33,7 +33,7 @@ jobs:
         Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
     - name: Install MEmu Player
       run: |
-        Invoke-WebRequest "https://www.memuplay.com/dists/download.php?package_url=https://download.microvirt.com/upgrade/Memu-Setup-7.2.2.3.exe" -OutFile "MEmu-Setup.exe"
+        Invoke-WebRequest "https://www.memuplay.com/download-memu-on-pc.html?from=online2_installer" -OutFile "MEmu-Setup.exe"
         Start-Process -FilePath "MEmu-Setup.exe" -ArgumentList "/S" -Wait
     - name: Show Desktop icons
       run: |
