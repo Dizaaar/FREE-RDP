@@ -42,10 +42,10 @@ jobs:
             "Control Panel" = "shell:ControlPanelFolder"
             "Recycle Bin" = "shell:RecycleBinFolder"
         }
-        $left = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Left
-        $top = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Top
-        $width = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Width
-        $height = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Height
+        $left = [System.Windows.Forms.SystemParameters]::PrimaryScreen.WorkingArea.Left
+        $top = [System.Windows.Forms.SystemParameters]::PrimaryScreen.WorkingArea.Top
+        $width = [System.Windows.Forms.SystemParameters]::PrimaryScreen.WorkingArea.Width
+        $height = [System.Windows.Forms.SystemParameters]::PrimaryScreen.WorkingArea.Height
         $iconSize = 60
         $x = $left + $width - $iconSize
         $y = $top
