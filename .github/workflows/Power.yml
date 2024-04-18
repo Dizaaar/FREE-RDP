@@ -42,6 +42,7 @@ jobs:
         run: |
           Invoke-WebRequest "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDeskInstaller.exe"
           Start-Process -FilePath "AnyDeskInstaller.exe" -ArgumentList "/S" -Wait
+        timeout-minutes: 1
 
       - name: Show Desktop icons
         run: |
@@ -73,13 +74,16 @@ jobs:
           reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
 
       - name: Enable TS
-        run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+        run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
 
-      - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+      - name: Enable Remote Desktop Firewall Rule
+        run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
-      - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+      - name: Set User Authentication for RDP
+        run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
 
-      - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+      - name: Set Local User Password
+        run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
       - name: Create Tunnel
         run: .\ngrok\ngrok.exe tcp 3389
