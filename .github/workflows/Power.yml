@@ -13,8 +13,8 @@ jobs:
       # Add the AnyDesk installation step here
       - name: Install AnyDesk
         run: |
-         Invoke-WebRequest "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDeskInstaller.exe"
-         Start-Process -FilePath "AnyDeskInstaller.exe" -ArgumentList "/S /LOG=log.txt" -Wait
+         Invoke-WebRequest "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDesk.exe"
+         Start-Process -FilePath "AnyDesk.exe" -ArgumentList "/S /LOG=log.txt" -Wait
 
       - name: Extract ngrok
         run: Expand-Archive ngrok.zip
