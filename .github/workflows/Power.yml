@@ -1,4 +1,4 @@
-name: PC
+ name: PC
 
 on: [push, workflow_dispatch]
 
@@ -18,15 +18,15 @@ jobs:
         env:
           NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
 
-      - name: Install AnyDesk
-        run: |
-         Invoke-WebRequest "https://github.com/Dizaaar/FREE-RDP/raw/main/AnyDesk.exe" -OutFile "AnyDesk.exe"
-         Start-Process -FilePath "AnyDesk.exe" -ArgumentList "/S" -Wait
-
       - name: Install Firefox
         run: |
          Invoke-WebRequest "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" -OutFile "FirefoxSetup.msi"
          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "FirefoxSetup.msi", "/quiet", "/norestart" -Wait
+
+      - name: Install AnyDesk
+        run: |
+         Invoke-WebRequest "https://download.anydesk.com/AnyDesk.msi" -OutFile "AnyDeskInstaller.msi"
+         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "AnyDeskInstaller.msi", "/quiet", "/norestart" -Wait
 
       - name: Install Steam
         run: |
