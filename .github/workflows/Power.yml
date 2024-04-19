@@ -48,10 +48,14 @@ jobs:
             $filePath = "$filesFolder\$file"
             if (-not (Test-Path $filePath)) {
               $fileUrl = $fileUrls[$file]
-              Invoke-WebRequest -Uri $fileUrl -OutFile $filePath
-              if ($file -eq "MSI-APP-Player.zip") {
-                Expand-Archive -Path $filePath -DestinationPath $filesFolder
-                Remove-Item $filePath
+              if ($fileUrl -ne $null) {
+                Invoke-WebRequest -Uri $fileUrl -OutFile $filePath
+                if ($file -eq "MSI-APP-Player.zip") {
+                  Expand-Archive -Path $filePath -DestinationPath $filesFolder
+                  Remove-Item $filePath
+                }
+              } else {
+                Write-Host "URL not found for file: $file"
               }
             }
           }
