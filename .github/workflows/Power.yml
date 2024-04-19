@@ -27,11 +27,11 @@ jobs:
           # Install Google Chrome
           Invoke-WebRequest "https://dl.google.com/chrome/install/GoogleChromeStandaloneEnterprise64.msi" -OutFile "ChromeInstaller.msi"
           Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "ChromeInstaller.msi", "/quiet", "/norestart" -Wait
-          
+    
           # Install Firefox
           Invoke-WebRequest "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" -OutFile "FirefoxSetup.msi"
           Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "FirefoxSetup.msi", "/quiet", "/norestart" -Wait
-          
+    
           # Install Brave
           Invoke-WebRequest "https://laptop-updates.brave.com/latest/winx64" -OutFile "BraveSetup.msi"
           Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "BraveSetup.msi", "/quiet", "/norestart" -Wait
