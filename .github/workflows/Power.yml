@@ -69,18 +69,14 @@ jobs:
           Expand-Archive -Path "TaskbarX.zip" -DestinationPath $taskbarXPath
           Start-Process -FilePath "$taskbarXPath\TaskbarX.exe" -WindowStyle Hidden
 
-      - name: Set Chrome as default browser
-        run: |
-          $RegPath = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
-          Set-ItemProperty -Path $RegPath -Name "ProgId" -Value "ChromeHTML"
-
       - name: Set Wallpaper
         run: |
           Invoke-WebRequest "https://github.com/Dizaaar/FREE-RDP/raw/main/Wallpaper.jpg" -OutFile "Wallpaper.jpg"
           reg add "HKCU\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "$(pwd)\Wallpaper.jpg" /f
 
-      - name: Show Desktop icons
+      - name: Management Icons
         run: |
+          # Show Desktop Icons
           $desktopPath = [System.Environment]::GetFolderPath('Desktop')
           $shell = New-Object -ComObject WScript.Shell
           $icons = @{
@@ -97,6 +93,10 @@ jobs:
               $shortcut.TargetPath = $targetPath
               $shortcut.Save()
           }
+
+          # Hide Desktop Icons
+          cd /d C:\actions\runner-provisioner-Windows
+          attrib +h pc*
 
       - name: Change color mode to dark
         run: |
