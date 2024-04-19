@@ -38,6 +38,8 @@ jobs:
             "MEGAsyncSetup64.exe"
           )
           $fileUrls = @{
+            "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe" = "https://github.com/Dizaaar/FREE-RDP/raw/main/BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe";
+            "BlueStacksInstaller_4.280.4.4002_native_311cc3751d83f55754cd0fc1705efda2.exe" = "https://github.com/Dizaaar/FREE-RDP/raw/main/BlueStacksInstaller_4.280.4.4002_native_311cc3751d83f55754cd0fc1705efda2.exe";
             "BraveSetup.exe" = "https://laptop-updates.brave.com/latest/winx64";
             "MSI-APP-Player.zip" = "https://download.msi.com/uti_exe/nb/MSI-APP-Player.zip";
             "GLP_installer_900223150_market.exe" = "https://down.gameloop.com/channel/3/26460/GLP_installer_900223150_market.exe";
