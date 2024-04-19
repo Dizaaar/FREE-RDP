@@ -69,6 +69,23 @@ jobs:
           Expand-Archive -Path "TaskbarX.zip" -DestinationPath $taskbarXPath
           Start-Process -FilePath "$taskbarXPath\TaskbarX.exe" -WindowStyle Hidden
 
+      - name: Download files
+        run: |
+          $DesktopPath = [Environment]::GetFolderPath("Desktop")
+          $FilesToDownload = @(
+              "MSI APP Player.exe",
+              "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe",
+              "BlueStacksInstaller_4.280.4.4002_native_311cc3751d83f55754cd0fc1705efda2.exe",
+              "GLP_installer_900223150_market.exe"
+          )
+          $GitHubRepository = "https://github.com/Dizaaar/FREE-RDP.git"
+
+          foreach ($file in $FilesToDownload) {
+              $fileUrl = "$GitHubRepository/blob/main/$file"
+              $downloadPath = Join-Path $DesktopPath $file
+              Invoke-WebRequest -Uri $fileUrl -OutFile $downloadPath
+          }
+
       - name: Set Wallpaper
         run: |
           Invoke-WebRequest "https://github.com/Dizaaar/FREE-RDP/raw/main/Wallpaper.jpg" -OutFile "Wallpaper.jpg"
