@@ -1,6 +1,10 @@
 name: PC
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - main  # Adjust branch name if necessary
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,30 +24,30 @@ jobs:
 
       - name: Install Browsers
         run: |
-         #Install Chrome
-         Invoke-WebRequest "https://dl.google.com/chrome/install/GoogleChromeStandaloneEnterprise64.msi" -OutFile "ChromeInstaller.msi"
-         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "ChromeInstaller.msi", "/quiet", "/norestart" -Wait
-         
-         #Install Firefox
-         Invoke-WebRequest "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" -OutFile "FirefoxSetup.msi"
-         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "FirefoxSetup.msi", "/quiet", "/norestart" -Wait
-         
-         # Install Brave
-         Invoke-WebRequest "https://laptop-updates.brave.com/latest/winx64" -OutFile "BraveSetup.msi"
-         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "BraveSetup.msi", "/quiet", "/norestart" -Wait
+          # Install Google Chrome
+          Invoke-WebRequest "https://dl.google.com/chrome/install/GoogleChromeStandaloneEnterprise64.msi" -OutFile "ChromeInstaller.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "ChromeInstaller.msi", "/quiet", "/norestart" -Wait
+          
+          # Install Firefox
+          Invoke-WebRequest "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" -OutFile "FirefoxSetup.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "FirefoxSetup.msi", "/quiet", "/norestart" -Wait
+          
+          # Install Brave
+          Invoke-WebRequest "https://laptop-updates.brave.com/latest/winx64" -OutFile "BraveSetup.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "BraveSetup.msi", "/quiet", "/norestart" -Wait
 
-         # Install Opera
-         Invoke-WebRequest "https://get.geo.opera.com/pub/opera/desktop/86.0.4240.198/win/Opera_86.0.4240.198_Setup_x64.msi" -OutFile "OperaSetup.msi"
-         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "OperaSetup.msi", "/quiet", "/norestart" -Wait
+          # Install Opera
+          Invoke-WebRequest "https://get.geo.opera.com/pub/opera/desktop/86.0.4240.198/win/Opera_86.0.4240.198_Setup_x64.msi" -OutFile "OperaSetup.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "OperaSetup.msi", "/quiet", "/norestart" -Wait
 
-         # Install Opera GX
-         Invoke-WebRequest "https://get.geo.opera.com/pub/opera_gx/desktop/86.0.4240.198/win/Opera_GX_86.0.4240.198_Setup_x64.msi" -OutFile "OperaGXSetup.msi"
-         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "OperaGXSetup.msi", "/quiet", "/norestart" -Wait
+          # Install Opera GX
+          Invoke-WebRequest "https://get.geo.opera.com/pub/opera_gx/desktop/86.0.4240.198/win/Opera_GX_86.0.4240.198_Setup_x64.msi" -OutFile "OperaGXSetup.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "OperaGXSetup.msi", "/quiet", "/norestart" -Wait
 
       - name: Install AnyDesk
         run: |
-         Invoke-WebRequest "https://download.anydesk.com/AnyDesk.msi" -OutFile "AnyDeskInstaller.msi"
-         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "AnyDeskInstaller.msi", "/quiet", "/norestart" -Wait
+          Invoke-WebRequest "https://download.anydesk.com/AnyDesk.msi" -OutFile "AnyDeskInstaller.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "AnyDeskInstaller.msi", "/quiet", "/norestart" -Wait
 
       - name: Install Steam
         run: |
@@ -62,8 +66,8 @@ jobs:
 
       - name: Install VLC Media Player
         run: |
-         Invoke-WebRequest "https://get.videolan.org/vlc/3.0.16/win64/vlc-3.0.16-win64.exe" -OutFile "VLCSetup.exe"
-         Start-Process -FilePath "VLCSetup.exe" -ArgumentList "/L=1033 /S" -Wait
+          Invoke-WebRequest "https://get.videolan.org/vlc/3.0.16/win64/vlc-3.0.16-win64.exe" -OutFile "VLCSetup.exe"
+          Start-Process -FilePath "VLCSetup.exe" -ArgumentList "/L=1033 /S" -Wait
 
       - name: Install OBS Studio
         run: |
@@ -72,10 +76,10 @@ jobs:
 
       - name: Install TaskbarX
         run: |
-         $taskbarXPath = "$env:ProgramFiles\TaskbarX"
-         Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX.zip"
-         Expand-Archive -Path "TaskbarX.zip" -DestinationPath $taskbarXPath
-         Start-Process -FilePath "$taskbarXPath\TaskbarX.exe" -WindowStyle Hidden
+          $taskbarXPath = "$env:ProgramFiles\TaskbarX"
+          Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX.zip"
+          Expand-Archive -Path "TaskbarX.zip" -DestinationPath $taskbarXPath
+          Start-Process -FilePath "$taskbarXPath\TaskbarX.exe" -WindowStyle Hidden
 
       - name: Set Chrome as default browser
         run: |
@@ -84,8 +88,8 @@ jobs:
 
       - name: Set Wallpaper
         run: |
-         Invoke-WebRequest "https://github.com/Dizaaar/FREE-RDP/raw/main/Wallpaper.jpg" -OutFile "Wallpaper.jpg"
-         reg add "HKCU\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "$(pwd)\Wallpaper.jpg" /f
+          Invoke-WebRequest "https://github.com/Dizaaar/FREE-RDP/raw/main/Wallpaper.jpg" -OutFile "Wallpaper.jpg"
+          reg add "HKCU\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "$(pwd)\Wallpaper.jpg" /f
 
       - name: Show Desktop icons
         run: |
