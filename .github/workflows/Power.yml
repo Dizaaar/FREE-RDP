@@ -37,12 +37,12 @@ jobs:
           Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "BraveSetup.msi", "/quiet", "/norestart" -Wait
 
           # Install Opera
-          Invoke-WebRequest "https://get.geo.opera.com/pub/opera/desktop/86.0.4240.198/win/Opera_86.0.4240.198_Setup_x64.msi" -OutFile "OperaSetup.msi"
-          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "OperaSetup.msi", "/quiet", "/norestart" -Wait
+          Invoke-WebRequest "https://net.geo.opera.com/opera/stable/windows" -OutFile "OperaSetup.exe"
+          Start-Process -FilePath "OperaSetup.exe" -ArgumentList "/S" -Wait
 
           # Install Opera GX
-          Invoke-WebRequest "https://get.geo.opera.com/pub/opera_gx/desktop/86.0.4240.198/win/Opera_GX_86.0.4240.198_Setup_x64.msi" -OutFile "OperaGXSetup.msi"
-          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "OperaGXSetup.msi", "/quiet", "/norestart" -Wait
+          Invoke-WebRequest "https://get.geo.opera.com/pub/opera_gx/108.0.5067.43/win/Opera_GX_108.0.5067.43_Setup_x64.exe" -OutFile "OperaGXSetup.exe"
+          Start-Process -FilePath "OperaGXSetup.exe" -ArgumentList "/S" -Wait
 
       - name: Install AnyDesk
         run: |
