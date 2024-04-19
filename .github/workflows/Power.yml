@@ -54,7 +54,7 @@ jobs:
 
       - name: Install VLC Media Player
         run: |
-          Invoke-WebRequest "https://get.videolan.org/vlc/3.0.16/win64/vlc-3.0.16-win64.exe" -OutFile "vlc-3.0.16-win64.exe"
+          Invoke-WebRequest "https://videolan.interhost.co.il/vlc/3.0.16/win64/vlc-3.0.16-win64.exe" -OutFile "vlc-3.0.16-win64.exe"
           Start-Process -FilePath "vlc-3.0.16-win64.exe" -ArgumentList "/L=1033 /S" -Wait
 
       - name: Install OBS Studio
