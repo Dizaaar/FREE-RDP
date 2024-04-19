@@ -10,13 +10,6 @@ jobs:
       - name: Download ngrok
         run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
 
-      - name: Download AnyDesk Installer
-        run: Invoke-WebRequest -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile "AnyDesk.exe"
-
-      - name: Install AnyDesk
-        run: |
-         Start-Process -FilePath "AnyDesk.exe" -ArgumentList "/S /LOG=log.txt" -Wait
-
       - name: Extract ngrok
         run: Expand-Archive ngrok.zip
 
@@ -86,3 +79,5 @@ jobs:
       - name: Set Local User Password
         run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
+      - name: Create Tunnel
+        run: .\ngrok\ngrok.exe tcp 3389
