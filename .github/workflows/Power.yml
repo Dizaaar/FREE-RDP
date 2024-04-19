@@ -18,6 +18,16 @@ jobs:
         env:
           NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
 
+      - name: Install Chrome
+        run: |
+         Invoke-WebRequest "https://dl.google.com/chrome/install/GoogleChromeStandaloneEnterprise64.msi" -OutFile "ChromeSetup.msi"
+         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "ChromeSetup.msi", "/quiet", "/norestart" -Wait
+
+      - name: Install Firefox
+        run: |
+         Invoke-WebRequest "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" -OutFile "FirefoxSetup.msi"
+         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "FirefoxSetup.msi", "/quiet", "/norestart" -Wait
+
       - name: Install Steam
         run: |
           Invoke-WebRequest "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe" -OutFile "SteamSetup.exe"
