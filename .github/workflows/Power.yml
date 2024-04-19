@@ -38,6 +38,11 @@ jobs:
           Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-27.2.3-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
           Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
 
+      - name: Set Wallpaper
+        run: |
+         Invoke-WebRequest "https://github.com/Dizaaar/FREE-RDP/raw/main/Wallpaper.jpg" -OutFile "Wallpaper.jpg"
+         reg add "HKCU\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "$(pwd)\Wallpaper.jpg" /f
+
       - name: Show Desktop icons
         run: |
           $desktopPath = [System.Environment]::GetFolderPath('Desktop')
@@ -57,11 +62,6 @@ jobs:
               $shortcut.Save()
           }
 
-      - name: Set Chrome as default web browser
-        run: |
-          $RegPath = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
-          Set-ItemProperty -Path $RegPath -Name "ProgId" -Value "ChromeHTML"
-
       - name: Change color mode to dark
         run: |
           reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
@@ -77,7 +77,7 @@ jobs:
         run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
 
       - name: Set Local User Password
-        run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+        run: Set-LocalUser -Name "Dizar" -Password (ConvertTo-SecureString -AsPlainText "Zs#Zs#33" -Force)
 
       - name: Create Tunnel
         run: .\ngrok\ngrok.exe tcp 3389
