@@ -18,15 +18,27 @@ jobs:
         env:
           NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
 
-      - name: Install Chrome
+      - name: Install Browsers
         run: |
+         #Install Chrome
          Invoke-WebRequest "https://dl.google.com/chrome/install/GoogleChromeStandaloneEnterprise64.msi" -OutFile "ChromeInstaller.msi"
          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "ChromeInstaller.msi", "/quiet", "/norestart" -Wait
-
-      - name: Install Firefox
-        run: |
+         
+         #Install Firefox
          Invoke-WebRequest "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" -OutFile "FirefoxSetup.msi"
          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "FirefoxSetup.msi", "/quiet", "/norestart" -Wait
+         
+         # Install Brave
+         Invoke-WebRequest "https://laptop-updates.brave.com/latest/winx64" -OutFile "BraveSetup.msi"
+         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "BraveSetup.msi", "/quiet", "/norestart" -Wait
+
+         # Install Opera
+         Invoke-WebRequest "https://get.geo.opera.com/pub/opera/desktop/86.0.4240.198/win/Opera_86.0.4240.198_Setup_x64.msi" -OutFile "OperaSetup.msi"
+         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "OperaSetup.msi", "/quiet", "/norestart" -Wait
+
+         # Install Opera GX
+         Invoke-WebRequest "https://get.geo.opera.com/pub/opera_gx/desktop/86.0.4240.198/win/Opera_GX_86.0.4240.198_Setup_x64.msi" -OutFile "OperaGXSetup.msi"
+         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "OperaGXSetup.msi", "/quiet", "/norestart" -Wait
 
       - name: Install AnyDesk
         run: |
@@ -47,6 +59,11 @@ jobs:
         run: |
           Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
           Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
+
+      - name: Install VLC Media Player
+        run: |
+         Invoke-WebRequest "https://get.videolan.org/vlc/3.0.16/win64/vlc-3.0.16-win64.exe" -OutFile "VLCSetup.exe"
+         Start-Process -FilePath "VLCSetup.exe" -ArgumentList "/L=1033 /S" -Wait
 
       - name: Install OBS Studio
         run: |
