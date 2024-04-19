@@ -53,11 +53,12 @@ jobs:
           Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-30.1.2-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
           Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
 
-      - name: Install TaskbarX
+      - name: Install and run TaskbarX
         run: |
          Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX.zip"
          Expand-Archive -Path "TaskbarX.zip" -DestinationPath "TaskbarX"
-         Start-Process -FilePath "$env:ProgramFiles\TaskbarX\TaskbarX.exe" -ArgumentList "/background" -WindowStyle Hidden
+         Copy-Item -Path ".\TaskbarX\TaskbarX.exe" -Destination "$env:ProgramFiles\TaskbarX" -Force
+         Start-Process -FilePath "$env:ProgramFiles\TaskbarX\TaskbarX.exe" -WindowStyle Hidden
 
       - name: Set Chrome as default browser
         run: |
