@@ -1,4 +1,4 @@
- name: PC
+name: PC
 
 on: [push, workflow_dispatch]
 
