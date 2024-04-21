@@ -3,22 +3,24 @@ name: PC
 on:
   push:
     branches:
-      - main  # Adjust branch name if necessary
-  workflow_dispatch:  # Manually trigger workflow
+      - main
+  workflow_dispatch
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Download ngrok
-        run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
-
-      - name: Extract ngrok
-        run: Expand-Archive ngrok.zip
-
-      - name: Auth ngrok
-        run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+      - name: Setup ngrok
+        run: |
+          # Download ngrok
+          Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
+          
+          # Extract ngrok
+          Expand-Archive ngrok.zip
+          
+          # Authenticate ngrok
+          .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
         env:
           NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
 
@@ -31,20 +33,16 @@ jobs:
           }
           $filesToDownload = @(
             "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe",
-            "BlueStacksInstaller_4.280.4.4002_native_311cc3751d83f55754cd0fc1705efda2.exe",
             "BraveSetup.exe",
             "MSI-APP-Player.zip",
             "GLP_installer_900223150_market.exe",
-            "MEmuSetup.exe",
             "MEGAsyncSetup64.exe"
           )
           $fileUrls = @{
             "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe" = "https://github.com/Dizaaar/FREE-RDP/raw/main/BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe";
-            "BlueStacksInstaller_4.280.4.4002_native_311cc3751d83f55754cd0fc1705efda2.exe" = "https://github.com/Dizaaar/FREE-RDP/raw/main/BlueStacksInstaller_4.280.4.4002_native_311cc3751d83f55754cd0fc1705efda2.exe";
             "BraveSetup.exe" = "https://laptop-updates.brave.com/latest/winx64";
             "MSI-APP-Player.zip" = "https://download.msi.com/uti_exe/nb/MSI-APP-Player.zip";
             "GLP_installer_900223150_market.exe" = "https://down.gameloop.com/channel/3/26460/GLP_installer_900223150_market.exe";
-            "MEmuSetup.exe" = "https://www.memuplay.com/download-memu-on-pc.html?from=online2_installer";
             "MEGAsyncSetup64.exe" = "https://mega.nz/MEGAsyncSetup64.exe";
           }
           foreach ($file in $filesToDownload) {
@@ -63,56 +61,47 @@ jobs:
             }
           }
 
-      - name: Install Browsers
-        run: |   
-          # Install Firefox
-          Invoke-WebRequest "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" -OutFile "FirefoxSetup.msi"
-          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "FirefoxSetup.msi", "/quiet", "/norestart" -Wait
-
-      - name: Install AnyDesk
+      - name: Install Applications
         run: |
-          Invoke-WebRequest "https://download.anydesk.com/AnyDesk.msi" -OutFile "AnyDeskInstaller.msi"
-          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "AnyDeskInstaller.msi", "/quiet", "/norestart" -Wait
+          $apps = @(
+            # Install Firefox
+            "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US",
+            # Install AnyDesk
+            "https://download.anydesk.com/AnyDesk.msi",
+            # Install Steam
+            "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe",
+            # Install Epic Games Launcher
+            "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi",
+            # Install WinRAR 64-bit
+            "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe",
+            # Install VLC Media Player
+            "https://videolan.interhost.co.il/vlc/3.0.16/win64/vlc-3.0.16-win64.exe",
+            # Install OBS Studio
+            "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-30.1.2-Full-Installer-x64.exe"
+          )
+          foreach ($app in $apps) {
+            Invoke-WebRequest $app -OutFile "$(Split-Path $app -Leaf)"
+            $installer = "$(Split-Path $app -Leaf)"
+            Start-Process -FilePath $installer -ArgumentList "/S" -Wait
+          }
 
-      - name: Install Steam
+      - name: Manage Desktop UI
         run: |
-          Invoke-WebRequest "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe" -OutFile "SteamSetup.exe"
-          Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
-
-      - name: Install Epic Games Launcher
-        run: |
-          Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
-          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
-
-      - name: Install WinRAR 64-bit
-        run: |
-          Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
-          Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
-
-      - name: Install VLC Media Player
-        run: |
-          Invoke-WebRequest "https://videolan.interhost.co.il/vlc/3.0.16/win64/vlc-3.0.16-win64.exe" -OutFile "vlc-3.0.16-win64.exe"
-          Start-Process -FilePath "vlc-3.0.16-win64.exe" -ArgumentList "/L=1033 /S" -Wait
-
-      - name: Install OBS Studio
-        run: |
-          Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-30.1.2-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
-          Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
-
-      - name: Install TaskbarX
-        run: |
-          $taskbarXPath = "$env:ProgramFiles\TaskbarX"
-          Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX.zip"
-          Expand-Archive -Path "TaskbarX.zip" -DestinationPath $taskbarXPath
-          Start-Process -FilePath "$taskbarXPath\TaskbarX.exe" -WindowStyle Hidden
-
-      - name: Set Wallpaper
-        run: |
+          # Switch to Dark Mode
+          reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
+          reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
+          
+          # Minimize Taskbar Size
+          reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v TaskbarSi /t REG_DWORD /d 1 /f
+          
+          # Minimize Search Box
+          reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v SearchboxTaskbarMode /t REG_DWORD /d 0 /f
+          
+          # Set Desktop Background
           Invoke-WebRequest "https://github.com/Dizaaar/FREE-RDP/raw/main/Wallpaper.jpg" -OutFile "Wallpaper.jpg"
           reg add "HKCU\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "$(pwd)\Wallpaper.jpg" /f
 
-      - name: Show Desktop icons
-        run: |
+          # Display Desktop Icons
           $desktopPath = [System.Environment]::GetFolderPath('Desktop')
           $shell = New-Object -ComObject WScript.Shell
           $icons = @{
@@ -130,19 +119,16 @@ jobs:
             $shortcut.Save()
           }
 
-      - name: Change color mode to dark
+      - name: Enable Remote Desktop
         run: |
-          reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
-          reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
+          # Enable TS
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
 
-      - name: Enable TS
-        run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+          # Enable Remote Desktop Firewall Rule
+          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
-      - name: Enable Remote Desktop Firewall Rule
-        run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-
-      - name: Set User Authentication for RDP
-        run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
+          # Set User Authentication for RDP
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
 
       - name: Set Local User Password
         run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
