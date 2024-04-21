@@ -104,8 +104,8 @@ jobs:
           Start-Process -FilePath "ahk-install.exe" -ArgumentList "/S" -Wait
 
           # Install Seed4.me VPN
-          Invoke-WebRequest "https://seed4.me/app/getLatest/windows" -OutFile "Seed4meInstaller.exe"
-          Start-Process -FilePath "Seed4meInstaller.exe" -ArgumentList "/S" -Wait
+          Invoke-WebRequest "https://seed4.me/app/getLatest/windows" -OutFile "seed4me-vpn-1.0.80.exe"
+          Start-Process -FilePath "seed4me-vpn-1.0.80.exe" -ArgumentList "/S" -Wait
 
       - name: Manage Desktop UI
         run: |
