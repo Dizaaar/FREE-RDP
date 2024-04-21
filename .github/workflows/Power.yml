@@ -15,7 +15,7 @@ jobs:
         run: |
           $downloadUrl = "https://github.com/Dizaaar/FREE-RDP/raw/main/chroma_cur_black_s"
           $downloadPath = "C:\chroma_cur_black_s"
-          Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath -Method Download
+          Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath
           
       - name: Install using install.inf
         run: |
