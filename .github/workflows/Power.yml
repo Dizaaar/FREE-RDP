@@ -11,26 +11,21 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Setup ngrok
-        run: |
-          # Download ngrok
-          Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
-          
-          # Extract ngrok
-          Expand-Archive ngrok.zip
-          
-          # Authenticate ngrok
-          .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
-        env:
-          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-
       - name: Download chroma_cur_black_s folder
         run: |
-          $downloadUrl = "https://github.com/Dizaaar/FREE-RDP/archive/refs/heads/main.zip"
-          $downloadPath = "C:\chroma_cur_black_s.zip"
-          Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath
-          Expand-Archive -Path $downloadPath -DestinationPath "C:\"
-
+          $downloadUrl = "https://github.com/Dizaaar/FREE-RDP/raw/main/chroma_cur_black_s"
+          $downloadPath = "C:\chroma_cur_black_s"
+          Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath -Method Download
+          
+      - name: Install using install.inf
+        run: |
+          $installInfPath = "C:\chroma_cur_black_s\install.inf"
+          if (Test-Path $installInfPath) {
+            Start-Process -FilePath "cmd.exe" -ArgumentList "/c $installInfPath"
+          } else {
+            Write-Host "install.inf not found in chroma_cur_black_s folder."
+          }
+          
       - name: Open Mouse Properties and Change Scheme
         run: |
           # Open Mouse Properties
@@ -39,7 +34,7 @@ jobs:
           # Wait for Mouse Properties window to open
           Start-Sleep -Seconds 5
 
-          # Send keys to change the scheme to Chrome S
+          # Send keys to change the scheme to Chroma S
           Add-Type -AssemblyName System.Windows.Forms
           [System.Windows.Forms.SendKeys]::SendWait("{TAB}")  # Navigate to Pointer Options tab
           Start-Sleep -Milliseconds 500
@@ -50,7 +45,7 @@ jobs:
           [System.Windows.Forms.SendKeys]::SendWait("C")  # Select Chrome S scheme
           Start-Sleep -Milliseconds 500
           [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")  # Apply the changes
-
+          
       - name: Enable Remote Desktop
         run: |
           # Enable TS
