@@ -31,6 +31,13 @@ jobs:
           if (-not (Test-Path $filesFolder)) {
             New-Item -ItemType Directory -Path $filesFolder
           }
+          $filesToDownload = @(
+            "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe",
+            "BraveSetup.exe",
+            "MSI-APP-Player.zip",
+            "GLP_installer_900223150_market.exe",
+            "MEGAsyncSetup64.exe"
+          )
           $fileUrls = @{
             "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe" = "https://github.com/Dizaaar/FREE-RDP/raw/main/BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe";
             "BraveSetup.exe" = "https://laptop-updates.brave.com/latest/winx64";
@@ -38,7 +45,7 @@ jobs:
             "GLP_installer_900223150_market.exe" = "https://down.gameloop.com/channel/3/26460/GLP_installer_900223150_market.exe";
             "MEGAsyncSetup64.exe" = "https://mega.nz/MEGAsyncSetup64.exe";
           }
-          foreach ($file in $fileUrls.Keys) {
+          foreach ($file in $filesToDownload) {
             $filePath = "$filesFolder\$file"
             if (-not (Test-Path $filePath)) {
               $fileUrl = $fileUrls[$file]
@@ -56,27 +63,39 @@ jobs:
 
       - name: Install Applications
         run: |
-          $apps = @(
-            # Install Firefox
-            "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US",
-            # Install AnyDesk
-            "https://download.anydesk.com/AnyDesk.msi",
-            # Install Steam
-            "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe",
-            # Install Epic Games Launcher
-            "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi",
-            # Install WinRAR 64-bit
-            "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe",
-            # Install VLC Media Player
-            "https://videolan.interhost.co.il/vlc/3.0.16/win64/vlc-3.0.16-win64.exe",
-            # Install OBS Studio
-            "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-30.1.2-Full-Installer-x64.exe"
-          )
-          foreach ($app in $apps) {
-            $fileName = $app.Substring($app.LastIndexOf('/') + 1)
-            Invoke-WebRequest -Uri $app -OutFile $fileName
-            Start-Process -FilePath $fileName -ArgumentList "/S" -Wait
-          }
+          # Install Firefox
+          Invoke-WebRequest "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" -OutFile "FirefoxSetup.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "FirefoxSetup.msi", "/quiet", "/norestart" -Wait
+          
+          # Install AnyDesk
+          Invoke-WebRequest "https://download.anydesk.com/AnyDesk.msi" -OutFile "AnyDeskInstaller.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "AnyDeskInstaller.msi", "/quiet", "/norestart" -Wait
+          
+          # Install Steam
+          Invoke-WebRequest "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe" -OutFile "SteamSetup.exe"
+          Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
+          
+          # Install Epic Games Launcher
+          Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
+          
+          # Install WinRAR 64-bit
+          Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
+          Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
+          
+          # Install VLC Media Player
+          Invoke-WebRequest "https://videolan.interhost.co.il/vlc/3.0.16/win64/vlc-3.0.16-win64.exe" -OutFile "vlc-3.0.16-win64.exe"
+          Start-Process -FilePath "vlc-3.0.16-win64.exe" -ArgumentList "/L=1033 /S" -Wait
+          
+          # Install OBS Studio
+          Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-30.1.2-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
+          Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
+          
+          # Install TaskbarX
+          $taskbarXPath = "$env:ProgramFiles\TaskbarX"
+          Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX.zip"
+          Expand-Archive -Path "TaskbarX.zip" -DestinationPath $taskbarXPath
+          Start-Process -FilePath "$taskbarXPath\TaskbarX.exe" -ArgumentList "-silent"
 
       - name: Manage Desktop UI
         run: |
