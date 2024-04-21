@@ -17,20 +17,11 @@ jobs:
           $downloadPath = "C:\chroma_cur_black_s"
           Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath
           
-      - name: Right-click and select Install
+      - name: Install using install.inf
         run: |
-          $installPath = "C:\chroma_cur_black_s\install.inf"
-          if (Test-Path $installPath) {
-            # Simulate right-click
-            [System.Windows.Forms.SendKeys]::SendWait("{APPSKEY}")
-
-            # Wait for context menu to appear
-            Start-Sleep -Seconds 2
-
-            # Send keys to select "Install"
-            [System.Windows.Forms.SendKeys]::SendWait("{DOWN}")  # Navigate to "Install"
-            Start-Sleep -Milliseconds 500
-            [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")  # Select "Install"
+          $installInfPath = "C:\chroma_cur_black_s\install.inf"
+          if (Test-Path $installInfPath) {
+            & "$installInfPath"
           } else {
             Write-Host "install.inf not found in chroma_cur_black_s folder."
           }
