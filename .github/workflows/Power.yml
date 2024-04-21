@@ -31,13 +31,6 @@ jobs:
           if (-not (Test-Path $filesFolder)) {
             New-Item -ItemType Directory -Path $filesFolder
           }
-          $filesToDownload = @(
-            "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe",
-            "BraveSetup.exe",
-            "MSI-APP-Player.zip",
-            "GLP_installer_900223150_market.exe",
-            "MEGAsyncSetup64.exe"
-          )
           $fileUrls = @{
             "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe" = "https://github.com/Dizaaar/FREE-RDP/raw/main/BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe";
             "BraveSetup.exe" = "https://laptop-updates.brave.com/latest/winx64";
@@ -45,7 +38,7 @@ jobs:
             "GLP_installer_900223150_market.exe" = "https://down.gameloop.com/channel/3/26460/GLP_installer_900223150_market.exe";
             "MEGAsyncSetup64.exe" = "https://mega.nz/MEGAsyncSetup64.exe";
           }
-          foreach ($file in $filesToDownload) {
+          foreach ($file in $fileUrls.Keys) {
             $filePath = "$filesFolder\$file"
             if (-not (Test-Path $filePath)) {
               $fileUrl = $fileUrls[$file]
@@ -80,9 +73,9 @@ jobs:
             "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-30.1.2-Full-Installer-x64.exe"
           )
           foreach ($app in $apps) {
-            Invoke-WebRequest $app -OutFile "$(Split-Path $app -Leaf)"
-            $installer = "$(Split-Path $app -Leaf)"
-            Start-Process -FilePath $installer -ArgumentList "/S" -Wait
+            $fileName = $app.Substring($app.LastIndexOf('/') + 1)
+            Invoke-WebRequest -Uri $app -OutFile $fileName
+            Start-Process -FilePath $fileName -ArgumentList "/S" -Wait
           }
 
       - name: Manage Desktop UI
