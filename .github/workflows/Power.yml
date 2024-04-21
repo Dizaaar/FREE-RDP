@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   build:
@@ -133,5 +133,5 @@ jobs:
       - name: Set Local User Password
         run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
-      - name: Create Tunnel
+      - name: Create Tunnel with ngrok
         run: .\ngrok\ngrok.exe tcp 3389
