@@ -103,6 +103,10 @@ jobs:
           Invoke-WebRequest "https://www.autohotkey.com/download/ahk-install.exe" -OutFile "ahk-install.exe"
           Start-Process -FilePath "ahk-install.exe" -ArgumentList "/S" -Wait
 
+          # Install Seed4.me VPN
+          Invoke-WebRequest "https://seed4.me/app/getLatest/windows" -OutFile "Seed4meInstaller.exe"
+          Start-Process -FilePath "Seed4meInstaller.exe" -ArgumentList "/S" -Wait
+
       - name: Manage Desktop UI
         run: |
           # Switch to Dark Mode
