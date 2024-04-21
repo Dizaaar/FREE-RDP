@@ -11,6 +11,19 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - name: Setup ngrok
+        run: |
+          # Download ngrok
+          Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
+          
+          # Extract ngrok
+          Expand-Archive ngrok.zip
+          
+          # Authenticate ngrok
+          .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+        env:
+          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+
       - name: Download chroma_cur_black_s folder
         run: |
           $downloadUrl = "https://github.com/Dizaaar/FREE-RDP/raw/main/chroma_cur_black_s"
