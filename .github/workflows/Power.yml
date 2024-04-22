@@ -34,7 +34,12 @@ jobs:
       - name: Install chroma_cur_black_s
         run: |
           cd C:\chroma_cur_black_s
-          cmd /c start /wait pnputil -i -a install.inf
+          # Simulate right-click
+          [System.Windows.Forms.SendKeys]::SendWait("{APPSKEY}")
+          Start-Sleep -Milliseconds 500
+          # Select "Install" from context menu
+          [System.Windows.Forms.SendKeys]::SendWait("i")
+          Start-Sleep -Milliseconds 500
 
       - name: Open Mouse Properties and Change Scheme
         run: |
@@ -65,10 +70,4 @@ jobs:
           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
           # Set User Authentication for RDP
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
-
-      - name: Set Local User Password
-        run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
-
-      - name: Create Tunnel
-        run: .\ngrok\ngrok.exe tcp 3389
+          Set-ItemProperty -Path 'HKLM:\Sy
