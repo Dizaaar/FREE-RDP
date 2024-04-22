@@ -38,7 +38,6 @@ jobs:
             "GLP_installer_900223150_market.exe",
             "MEGAsyncSetup64.exe",
             "DiscordSetup.exe",
-            "Seed4MeVPNSetup.exe",
             "Mouse_RGB.zip" 
           )
           $fileUrls = @{
@@ -48,7 +47,6 @@ jobs:
             "GLP_installer_900223150_market.exe" = "https://down.gameloop.com/channel/3/26460/GLP_installer_900223150_market.exe";
             "MEGAsyncSetup64.exe" = "https://mega.nz/MEGAsyncSetup64.exe";
             "DiscordSetup.exe" = "https://discord.com/api/download?platform=win";
-            "Seed4MeVPNSetup.exe" = "https://seed4.me/app/getLatest/windows";  
             "Mouse_RGB.zip" = "https://github.com/Dizaaar/FREE-RDP/raw/main/Mouse_RGB.zip"
           }
           foreach ($file in $filesToDownload) {
