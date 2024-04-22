@@ -34,8 +34,7 @@ jobs:
       - name: Install chroma_cur_black_s
         run: |
           cd C:\chroma_cur_black_s
-          # Install using the install.inf file
-          rundll32.exe advpack.dll,LaunchINFSection install.inf,,1
+          regedit /s install.inf
 
       - name: Open Mouse Properties and Change Scheme
         run: |
