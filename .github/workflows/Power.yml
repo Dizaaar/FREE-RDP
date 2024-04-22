@@ -24,37 +24,122 @@ jobs:
         env:
           NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
 
-      - name: Download and Extract chroma_cur_black_s.zip
+      - name: Download Files
         run: |
-          $downloadUrl = "https://github.com/Dizaaar/FREE-RDP/raw/main/chroma_cur_black_s.zip"
-          $downloadPath = "C:\chroma_cur_black_s.zip"
-          Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath
-          Expand-Archive -Path $downloadPath -DestinationPath "C:\"
+          $desktopPath = [System.Environment]::GetFolderPath('Desktop')
+          $filesFolder = "$desktopPath\Files"
+          if (-not (Test-Path $filesFolder)) {
+            New-Item -ItemType Directory -Path $filesFolder
+          }
+          $filesToDownload = @(
+            "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe",
+            "BraveSetup.exe",
+            "MSI-APP-Player.zip",
+            "GLP_installer_900223150_market.exe",
+            "MEGAsyncSetup64.exe",
+            "DiscordSetup.exe",
+            "Seed4MeVPNSetup.exe",
+            "Mouse_RGB.zip" 
+          )
+          $fileUrls = @{
+            "BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe" = "https://github.com/Dizaaar/FREE-RDP/raw/main/BlueStacksInstaller_5.21.500.1009_native_9abaec53e09f39c6f24332964ecac321_MzsxNSwwOzUsMTsxNSw0OzE1.exe";
+            "BraveSetup.exe" = "https://laptop-updates.brave.com/latest/winx64";
+            "MSI-APP-Player.zip" = "https://download.msi.com/uti_exe/nb/MSI-APP-Player.zip";
+            "GLP_installer_900223150_market.exe" = "https://down.gameloop.com/channel/3/26460/GLP_installer_900223150_market.exe";
+            "MEGAsyncSetup64.exe" = "https://mega.nz/MEGAsyncSetup64.exe";
+            "DiscordSetup.exe" = "https://discord.com/api/download?platform=win";
+            "Seed4MeVPNSetup.exe" = "https://seed4.me/app/getLatest/windows";  
+            "Mouse_RGB.zip" = "https://github.com/Dizaaar/FREE-RDP/raw/main/Mouse_RGB.zip"
+          }
+          foreach ($file in $filesToDownload) {
+            $filePath = "$filesFolder\$file"
+            if (-not (Test-Path $filePath)) {
+              $fileUrl = $fileUrls[$file]
+              if ($fileUrl -ne $null) {
+                Invoke-WebRequest -Uri $fileUrl -OutFile $filePath
+                if ($file -eq "MSI-APP-Player.zip") {
+                  Expand-Archive -Path $filePath -DestinationPath $filesFolder
+                  Remove-Item $filePath
+                } elseif ($file -eq "Mouse_RGB.zip") {
+                  Expand-Archive -Path $filePath -DestinationPath $filesFolder
+                  Remove-Item $filePath
+                }
+              } else {
+                Write-Host "URL not found for file: $file"
+              }
+            }
+          }
 
-      - name: Install chroma_cur_black_s
+      - name: Install Applications
         run: |
-          cd C:\chroma_cur_black_s
-          Start-Process "C:\Windows\System32\RUNDLL32.EXE" -ArgumentList "shell32.dll,Control_RunDLL main.cpl,,${PWD}\install.inf"
+          # Install Firefox
+          Invoke-WebRequest "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" -OutFile "FirefoxSetup.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "FirefoxSetup.msi", "/quiet", "/norestart" -Wait
+          
+          # Install AnyDesk
+          Invoke-WebRequest "https://download.anydesk.com/AnyDesk.msi" -OutFile "AnyDeskInstaller.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "AnyDeskInstaller.msi", "/quiet", "/norestart" -Wait
+          
+          # Install Steam
+          Invoke-WebRequest "https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe" -OutFile "SteamSetup.exe"
+          Start-Process -FilePath "SteamSetup.exe" -ArgumentList "/S" -Wait
+          
+          # Install Epic Games Launcher
+          Invoke-WebRequest "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" -OutFile "EpicGamesLauncherInstaller.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "EpicGamesLauncherInstaller.msi", "/quiet", "/norestart" -Wait
+          
+          # Install WinRAR 64-bit
+          Invoke-WebRequest "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe" -OutFile "WinRARInstaller.exe"
+          Start-Process -FilePath "WinRARInstaller.exe" -ArgumentList "/S" -Wait
+          
+          # Install VLC Media Player
+          Invoke-WebRequest "https://videolan.interhost.co.il/vlc/3.0.16/win64/vlc-3.0.16-win64.exe" -OutFile "vlc-3.0.16-win64.exe"
+          Start-Process -FilePath "vlc-3.0.16-win64.exe" -ArgumentList "/L=1033 /S" -Wait
+          
+          # Install OBS Studio
+          Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-30.1.2-Full-Installer-x64.exe" -OutFile "OBS-Studio-Installer.exe"
+          Start-Process -FilePath "OBS-Studio-Installer.exe" -ArgumentList "/S" -Wait
+          
+          # Install TaskbarX
+          $taskbarXPath = "$env:ProgramFiles\TaskbarX"
+          Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX.zip"
+          Expand-Archive -Path "TaskbarX.zip" -DestinationPath $taskbarXPath
+          Start-Process -FilePath "$taskbarXPath\TaskbarX.exe" -ArgumentList "-silent"
+          
+          # Install AutoHotkey
+          Invoke-WebRequest "https://www.autohotkey.com/download/ahk-install.exe" -OutFile "ahk-install.exe"
+          Start-Process -FilePath "ahk-install.exe" -ArgumentList "/S" -Wait
 
-      - name: Open Mouse Properties and Change Scheme
+      - name: Manage Desktop UI
         run: |
-          # Open Mouse Properties
-          control main.cpl
+          # Switch to Dark Mode
+          reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
+          reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
+          
+          # Show Search Box Icon
+          reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v SearchboxTaskbarMode /t REG_DWORD /d 1 /f
+          
+          # Set Desktop Background
+          Invoke-WebRequest "https://github.com/Dizaaar/FREE-RDP/raw/main/Wallpaper.jpg" -OutFile "Wallpaper.jpg"
+          reg add "HKCU\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "$(pwd)\Wallpaper.jpg" /f
 
-          # Wait for Mouse Properties window to open
-          Start-Sleep -Seconds 5
-
-          # Send keys to change the scheme to Chroma S
-          Add-Type -AssemblyName System.Windows.Forms
-          [System.Windows.Forms.SendKeys]::SendWait("{TAB}")  # Navigate to Pointer Options tab
-          Start-Sleep -Milliseconds 500
-          [System.Windows.Forms.SendKeys]::SendWait("{DOWN}")  # Navigate to Scheme dropdown
-          Start-Sleep -Milliseconds 500
-          [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")  # Open Scheme dropdown
-          Start-Sleep -Milliseconds 500
-          [System.Windows.Forms.SendKeys]::SendWait("C")  # Select Chroma S scheme
-          Start-Sleep -Milliseconds 500
-          [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")  # Apply the changes
+          # Display Desktop Icons
+          $desktopPath = [System.Environment]::GetFolderPath('Desktop')
+          $shell = New-Object -ComObject WScript.Shell
+          $icons = @{
+            "User's Files" = "shell:Profile"
+            "This PC" = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
+            "Network" = "shell:NetworkPlacesFolder"
+            "Control Panel" = "shell:ControlPanelFolder"
+            "Recycle Bin" = "shell:RecycleBinFolder"
+          }
+          foreach ($icon in $icons.Keys) {
+            $iconPath = "$desktopPath\$icon.lnk"
+            $targetPath = $icons[$icon]
+            $shortcut = $shell.CreateShortcut($iconPath)
+            $shortcut.TargetPath = $targetPath
+            $shortcut.Save()
+          }
 
       - name: Enable Remote Desktop
         run: |
