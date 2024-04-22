@@ -33,14 +33,9 @@ jobs:
 
       - name: Install chroma_cur_black_s
         run: |
-          Add-Type -AssemblyName System.Windows.Forms
           cd C:\chroma_cur_black_s
-          # Simulate right-click
-          [System.Windows.Forms.SendKeys]::SendWait("{APPSKEY}")
-          Start-Sleep -Milliseconds 500
-          # Select "Install" from context menu
-          [System.Windows.Forms.SendKeys]::SendWait("i")
-          Start-Sleep -Milliseconds 500
+          # Install using the install.inf file
+          rundll32.exe advpack.dll,LaunchINFSection install.inf,,1
 
       - name: Open Mouse Properties and Change Scheme
         run: |
