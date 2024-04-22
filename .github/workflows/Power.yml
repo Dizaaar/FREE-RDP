@@ -33,8 +33,14 @@ jobs:
 
       - name: Install chroma_cur_black_s
         run: |
-          cd C:\chroma_cur_black_s
-          regedit /s install.inf
+          $infFilePath = "C:\chroma_cur_black_s\install.inf"
+          if (Test-Path $infFilePath) {
+            Write-Host "Installing mouse scheme..."
+            Add-Content -Path "C:\Windows\inf\install.inf" -Value (Get-Content $infFilePath)
+            Write-Host "Mouse scheme installed."
+          } else {
+            Write-Host "The install.inf file was not found."
+          }
 
       - name: Open Mouse Properties and Change Scheme
         run: |
