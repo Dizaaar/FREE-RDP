@@ -33,14 +33,8 @@ jobs:
 
       - name: Install chroma_cur_black_s
         run: |
-          $infFilePath = "C:\chroma_cur_black_s\install.inf"
-          if (Test-Path $infFilePath) {
-            Write-Host "Installing mouse scheme..."
-            Add-Content -Path "C:\Windows\inf\install.inf" -Value (Get-Content $infFilePath)
-            Write-Host "Mouse scheme installed."
-          } else {
-            Write-Host "The install.inf file was not found."
-          }
+          cd C:\chroma_cur_black_s
+          Start-Process "C:\Windows\System32\RUNDLL32.EXE" -ArgumentList "shell32.dll,Control_RunDLL main.cpl,,${PWD}\install.inf"
 
       - name: Open Mouse Properties and Change Scheme
         run: |
