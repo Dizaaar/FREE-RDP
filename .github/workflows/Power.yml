@@ -103,10 +103,6 @@ jobs:
           Invoke-WebRequest "https://github.com/ChrisAnd1998/TaskbarX/releases/download/1.7.8.0/TaskbarX_1.7.8.0_x64.zip" -OutFile "TaskbarX.zip"
           Expand-Archive -Path "TaskbarX.zip" -DestinationPath $taskbarXPath
           Start-Process -FilePath "$taskbarXPath\TaskbarX.exe" -ArgumentList "-silent"
-          
-          # Install AutoHotkey
-          Invoke-WebRequest "https://www.autohotkey.com/download/ahk-install.exe" -OutFile "ahk-install.exe"
-          Start-Process -FilePath "ahk-install.exe" -ArgumentList "/S" -Wait
 
       - name: Manage Desktop UI
         run: |
